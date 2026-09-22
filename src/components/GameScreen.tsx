@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { playCue } from '../sound'
 import { chooseMove, CPU_LEVEL_LABEL, type CpuLevel } from '../ai'
 import { calcReward, type GameResult, type Progress } from '../progress'
 import {
@@ -59,6 +60,8 @@ type Props = {
 }
 
 export function GameScreen({ mode, progress, onProgress, onExit }: Props) {
+  const [soundOn, setSoundOn] = useState(false)
+  const previousMoveCount = useRef(1)
   const [gameId, setGameId] = useState(0)
   const [history, setHistory] = useState<Snapshot[]>([INITIAL])
   const [showHints, setShowHints] = useState(true)
@@ -73,6 +76,22 @@ export function GameScreen({ mode, progress, onProgress, onExit }: Props) {
   const score = useMemo(() => countDiscs(current.board), [current])
   const finished = legalMoves.size === 0
   const winner: Player | null = score.black === score.white ? null : score.black > score.white ? 1 : 2
+
+  // Observe committed moves, including CPU turns; keep state updaters free of audio.
+  useEffect(() => {
+    const previous = previousMoveCount.current
+    previousMoveCount.current = history.length
+    if (!soundOn || history.length === previous || history.length === 1) return
+    if (history.length < previous) {
+      playCue('undo', true)
+      return
+    }
+    playCue('place', true)
+    const timers = [window.setTimeout(() => playCue('flip', true), 110)]
+    if (finished) timers.push(window.setTimeout(() => playCue(winner === null ? 'draw' : 'win', true), 380))
+    else if (current.passedBy !== null) timers.push(window.setTimeout(() => playCue('pass', true), 360))
+    return () => timers.forEach(window.clearTimeout)
+  }, [history.length, current, finished, winner, soundOn])
 
   const isCpuTurn = mode.kind === 'cpu' && current.turn === CPU && !finished
   const boardSkin = findBoardSkin(progress.equipped.board)
@@ -193,7 +212,13 @@ export function GameScreen({ mode, progress, onProgress, onExit }: Props) {
             🏁
           </button>
         ) : (
-          <span className="corner-spacer" />
+          <button type="button" className="corner-button sound-toggle" aria-pressed={soundOn}
+            aria-label={`効果音${soundOn ? 'オン' : 'オフ'}`} onClick={() => {
+              if (!soundOn) playCue('place', true)
+              setSoundOn((v) => !v)
+            }}>
+            音 {soundOn ? 'ON' : 'OFF'}
+          </button>
         )}
       </div>
 

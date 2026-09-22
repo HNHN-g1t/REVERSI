@@ -812,3 +812,20 @@ button {
     animation: none;
   }
 }
+
+/* Visual finish, scoped to the default skins so shop assets remain independent. */
+:root { --bg: #101b19; --bg-accent: #233a32; --text: #f5f0e3; --muted: #b4c8b9; }
+body { background: radial-gradient(ellipse at 50% -15%, #42654b, #162821 48%, #101b19); }
+.player-panel { border-color: #e9dbb526; box-shadow: inset 0 1px #fff1; }
+.player-panel.active { background: #e7c07129; border-color: #e2bd77; box-shadow: inset 0 1px #fff2, 0 0 0 2px #e2bd7722; }
+.board-green:not(.has-board-image) { box-shadow: 0 0 0 4px #bc8d51, 0 0 0 7px #5d3b24, 0 18px 42px #0008; }
+.board-green:not(.has-square-image):not(.has-board-image) .square { background-image: radial-gradient(circle at 50% 38%, #2d825f, #277658); }
+.board-green:not(.has-square-image):not(.has-board-image) .square.playable:hover,
+.board-green:not(.has-square-image):not(.has-board-image) .square.playable:focus-visible { background-image: none; background-color: #3c9670; }
+.square.last-move::after { inset: 17%; border-radius: 50%; }
+.hint-dot { width: 22%; height: 22%; box-shadow: 0 0 0 3px #fff1; }
+.stone-classic-black:not(.has-image) { background-image: radial-gradient(circle at 32% 24%, #55585a, #232729 36%, #090d10 78%); box-shadow: 0 3px 5px #001b12a9, inset 0 1px 2px #fff5; }
+.stone-classic-white:not(.has-image) { background-image: radial-gradient(circle at 32% 24%, #fffefd, #f2f0e8 45%, #b9c3bb 94%); box-shadow: 0 3px 5px #001b12a9, inset 0 1px 2px #fff5; }
+.corner-button:focus-visible { outline: 2px solid #f1d69d; outline-offset: 3px; }
+.sound-toggle { font-size: .7rem; font-weight: 700; }
+.sound-toggle[aria-pressed='true'] { background: #c49a5540; border-color: #e2bd77; }
