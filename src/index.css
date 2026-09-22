@@ -281,3 +281,51 @@ kbd {
     display: none;
   }
 }
+
+/* Warm table and satin stones: all decoration stays in CSS. */
+:root {
+  --bg: #101b19;
+  --bg-accent: #233a32;
+  --board: #277658;
+  --board-line: #17432f;
+  --text: #f5f0e3;
+  --muted: #b4c8b9;
+  --hint: rgba(255, 233, 168, .75);
+  --panel: rgba(247, 240, 215, .075);
+  --panel-active: rgba(231, 192, 113, .16);
+}
+
+body {
+  background: radial-gradient(ellipse at 50% -15%, #42654b 0%, #162821 48%, #101b19 100%);
+}
+
+.app { max-width: 38rem; padding-top: clamp(1.5rem, 5vh, 3.5rem); gap: 1.15rem; }
+.header h1 { font-size: clamp(1.85rem, 7vw, 2.6rem); font-weight: 800; letter-spacing: .22em; text-shadow: 0 2px 16px #0006; }
+.subtitle { letter-spacing: .06em; }
+.score-panel { min-height: 4.4rem; border: 1px solid #e9dbb526; box-shadow: inset 0 1px #fff1; }
+.score-panel.active { border-color: #e2bd77; box-shadow: inset 0 1px #fff2, 0 0 0 2px #e2bd7722; }
+.score-count { font-size: 1.7rem; }
+.status { color: #f2ddb1; font-weight: 600; }
+
+.board-wrap { padding: 11px; border-radius: 17px; background: linear-gradient(135deg, #d9ae6a, #80512d 42%, #5d3b24 55%, #bc8d51); box-shadow: 0 18px 42px #0008, inset 0 1px #fff7, 0 0 0 2px #3e2b1e; }
+.board { border-radius: 5px; gap: 2px; padding: 3px; box-shadow: inset 0 3px 12px #001d12a8; }
+.square { background: radial-gradient(circle at 50% 38%, #2d825f, var(--board)); }
+.square.playable:hover, .square.playable:focus-visible { background: #3c9670; }
+.square.last-move::after { inset: 17%; border: 2px solid #e9c27e; border-radius: 50%; }
+.hint-dot { width: 22%; height: 22%; box-shadow: 0 0 0 3px #fff1; }
+.disc { width: 79%; height: 79%; }
+.disc-face { box-shadow: 0 3px 5px #001b12a9, inset 0 1px 2px #fff5; }
+.disc-face.front, .score-disc.black { background: radial-gradient(circle at 32% 24%, #55585a 0%, #232729 36%, #090d10 78%); }
+.disc-face.back, .score-disc.white { background: radial-gradient(circle at 32% 24%, #fffefd 0%, #f2f0e8 45%, #b9c3bb 94%); }
+.controls button { border-color: #e9dbb545; padding: .65rem .95rem; font-weight: 600; }
+.controls button:hover:not(:disabled) { border-color: #e2bd77; }
+.controls button:focus-visible { outline: 2px solid #f1d69d; outline-offset: 3px; }
+.controls button[aria-pressed='true'] { background: #c49a5540; border-color: #e2bd77; }
+
+@media (max-width: 420px) {
+  .app { padding-inline: .8rem; }
+  .board-wrap { padding: 7px; border-radius: 11px; }
+  .score-panel { gap: .3rem; padding: .5rem; }
+  .score-count { font-size: 1.35rem; }
+  .controls button { font-size: .78rem; padding: .55rem .75rem; }
+}
