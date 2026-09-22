@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { playCue } from './sound'
 import {
   applyMove,
   colOf,
@@ -42,6 +43,7 @@ export default function App() {
   const [history, setHistory] = useState<Snapshot[]>([initialSnapshot])
   const [status, setStatus] = useState<Status>({ kind: 'playing' })
   const [showHints, setShowHints] = useState(true)
+  const [soundOn, setSoundOn] = useState(false)
 
   const current = history[history.length - 1]
   const { board, turn, lastMove, passedBy } = current
@@ -68,14 +70,19 @@ export default function App() {
 
       setHistory((prev) => [...prev, snapshot])
       setStatus(outcome.kind === 'finished' ? { kind: 'finished', winner: outcome.winner } : { kind: 'playing' })
+      playCue('place', soundOn)
+      if (flips.length) window.setTimeout(() => playCue('flip', soundOn), 110)
+      if (outcome.kind === 'pass') window.setTimeout(() => playCue('pass', soundOn), 360)
+      if (outcome.kind === 'finished') window.setTimeout(() => playCue(outcome.winner === null ? 'draw' : 'win', soundOn), 380)
     },
-    [board, legalMoves, status.kind, turn],
+    [board, legalMoves, soundOn, status.kind, turn],
   )
 
   const undo = useCallback(() => {
+    if (history.length > 1) playCue('undo', soundOn)
     setHistory((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev))
     setStatus({ kind: 'playing' })
-  }, [])
+  }, [history.length, soundOn])
 
   const reset = useCallback(() => {
     setHistory([initialSnapshot])
@@ -166,6 +173,9 @@ export default function App() {
         <button type="button" onClick={() => setShowHints((v) => !v)} aria-pressed={showHints}>
           置ける場所{showHints ? 'を隠す' : 'を表示'}
           <kbd>H</kbd>
+        </button>
+        <button type="button" onClick={() => setSoundOn((v) => !v)} aria-pressed={soundOn} aria-label={`効果音${soundOn ? 'オン' : 'オフ'}`}>
+          効果音 {soundOn ? 'ON' : 'OFF'}
         </button>
       </section>
 
